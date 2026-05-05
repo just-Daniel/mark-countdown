@@ -249,23 +249,39 @@ function handleChatSend() {
 }
 
 /* ===== Hearts Canvas ===== */
+function isMobile() {
+    return window.innerWidth <= 768;
+}
+
 function initHearts() {
     const canvas = $("hearts-canvas");
     const ctx = canvas.getContext("2d");
     let hearts = [];
-
+    let dpr = Math.min(window.devicePixelRatio || 1, 2);
     function resize() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = window.innerWidth * dpr;
+        canvas.height = window.innerHeight * dpr;
+        canvas.style.width = window.innerWidth + "px";
+        canvas.style.height = window.innerHeight + "px";
+        ctx.scale(dpr, dpr);
     }
     resize();
-    window.addEventListener("resize", resize);
+
+    let resizeTimer;
+    window.addEventListener("resize", () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(resize, 150);
+    });
+
+    // Fewer hearts on mobile for battery/performance
+    const heartCount = isMobile() ? 8 : 15;
 
     function createHeart() {
         return {
-            x: Math.random() * canvas.width,
-            y: canvas.height + 20,
-            size: 10 + Math.random() * 18,
+            x: Math.random() * window.innerWidth,
+            y: window.innerHeight + 20,
+            size: isMobile() ? (8 + Math.random() * 12) : (10 + Math.random() * 18),
             speed: 0.5 + Math.random() * 1.5,
             wobble: Math.random() * Math.PI * 2,
             wobbleSpeed: 0.01 + Math.random() * 0.03,
@@ -273,9 +289,9 @@ function initHearts() {
         };
     }
 
-    for (let i = 0; i < 15; i++) {
+    for (let i = 0; i < heartCount; i++) {
         const h = createHeart();
-        h.y = Math.random() * canvas.height;
+        h.y = Math.random() * window.innerHeight;
         hearts.push(h);
     }
 
@@ -297,11 +313,12 @@ function initHearts() {
     }
 
     function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
         hearts.forEach((h) => {
             h.y -= h.speed;
             h.wobble += h.wobbleSpeed;
-            const wx = h.x + Math.sin(h.wobble) * 30;
+            const wobbleAmp = isMobile() ? 20 : 30;
+            const wx = h.x + Math.sin(h.wobble) * wobbleAmp;
             drawHeart(wx, h.y, h.size, h.opacity);
             if (h.y < -30) {
                 Object.assign(h, createHeart());

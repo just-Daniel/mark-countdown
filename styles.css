@@ -583,33 +583,231 @@ section {
     z-index: 500;
 }
 
-/* ===== Responsive ===== */
-@media (max-width: 700px) {
-    .header h1 {
-        font-size: 1.5rem;
+/* ===== Safe Areas (notch, Dynamic Island, home indicator) ===== */
+@supports (padding: env(safe-area-inset-top)) {
+    body {
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: env(safe-area-inset-bottom);
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
     }
-    .countdown-value {
-        font-size: 2.5rem;
-    }
-    .flip-card {
-        padding: 14px 18px;
-        min-width: 75px;
+    .controls {
+        top: calc(12px + env(safe-area-inset-top));
+        right: calc(12px + env(safe-area-inset-right));
     }
     .chatbot {
-        width: 300px;
-        right: 10px;
+        bottom: env(safe-area-inset-bottom);
+        right: calc(12px + env(safe-area-inset-right));
+    }
+    section {
+        padding-top: calc(70px + env(safe-area-inset-top));
+        padding-bottom: calc(100px + env(safe-area-inset-bottom));
+    }
+}
+
+/* ===== Touch-friendly: prevent double-tap zoom ===== */
+button, .flip-card-wrapper {
+    touch-action: manipulation;
+}
+
+/* ===== Prevent iOS zoom on input focus (font-size >= 16px) ===== */
+.chatbot-input-row input {
+    font-size: 16px;
+}
+
+/* ===== Responsive: Tablets & small laptops ===== */
+@media (max-width: 768px) {
+    .header h1 {
+        font-size: 1.6rem;
+    }
+    .countdown-value {
+        font-size: 2.8rem;
+    }
+    .flip-card {
+        padding: 16px 20px;
+        min-width: 80px;
     }
     .progress-wrapper {
         width: 80%;
     }
+    .quote-box {
+        max-width: 90%;
+    }
+    .mini-game, .facts-section {
+        width: 92%;
+    }
 }
 
-@media (max-width: 520px) {
+/* ===== Responsive: Large phones (iPhone Pro Max, Galaxy S Ultra) ===== */
+@media (max-width: 430px) {
+    section {
+        padding: 70px 16px 110px;
+        gap: 24px;
+    }
     .header {
-        width: 95%;
+        width: 100%;
     }
     .header h1 {
-        font-size: 1.3rem;
+        font-size: 1.35rem;
+    }
+    .countdown-container {
+        gap: 10px;
+        width: 100%;
+    }
+    .countdown-value {
+        font-size: 2.4rem;
+    }
+    .flip-card {
+        padding: 12px 16px;
+        min-width: 70px;
+        border-radius: 12px;
+    }
+    .countdown-heading {
+        font-size: 0.75rem;
+        letter-spacing: 1px;
+    }
+    .chatbot {
+        width: calc(100% - 20px);
+        right: 10px;
+    }
+    .quote-box {
+        font-size: 0.95rem;
+        padding: 16px 18px;
+        max-width: 100%;
+    }
+    .mini-game, .facts-section {
+        width: 100%;
+        padding: 22px 18px;
+    }
+    .game-btn {
+        padding: 12px 28px;
+        font-size: 1rem;
+    }
+    .controls {
+        top: 12px;
+        right: 12px;
+        gap: 8px;
+    }
+    .controls button {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+    }
+    .progress-wrapper {
+        width: 90%;
+    }
+    .easter-egg-content h1 {
+        font-size: 1.8rem;
+    }
+    .easter-egg-content p {
+        font-size: 1rem;
+        padding: 0 20px;
+    }
+}
+
+/* ===== Responsive: Standard phones (iPhone 14/15, Pixel, Galaxy S) ===== */
+@media (max-width: 390px) {
+    .header h1 {
+        font-size: 1.25rem;
+    }
+    .countdown-value {
+        font-size: 2.1rem;
+    }
+    .flip-card {
+        padding: 10px 14px;
+        min-width: 65px;
+    }
+    .mini-game h2, .facts-section h2 {
+        font-size: 1.15rem;
+    }
+    .fact-item {
+        font-size: 0.85rem;
+        padding: 10px 12px;
+    }
+    .chatbot-messages {
+        height: 200px;
+    }
+}
+
+/* ===== Responsive: Small phones (iPhone SE, Galaxy A series) ===== */
+@media (max-width: 375px) {
+    section {
+        padding: 65px 12px 100px;
+        gap: 20px;
+    }
+    .header h1 {
+        font-size: 1.15rem;
+    }
+    .countdown-container {
+        gap: 8px;
+    }
+    .countdown-value {
+        font-size: 1.8rem;
+    }
+    .flip-card {
+        padding: 8px 12px;
+        min-width: 60px;
+        border-radius: 10px;
+    }
+    .countdown-heading {
+        font-size: 0.7rem;
+    }
+    .mode-hint {
+        font-size: 0.7rem;
+    }
+    .quote-box {
+        font-size: 0.85rem;
+        padding: 14px 14px;
+    }
+    .game-btn {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+    .controls button {
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+    }
+}
+
+/* ===== Responsive: Very small phones (iPhone SE 1st gen, old Androids) ===== */
+@media (max-width: 320px) {
+    .header h1 {
+        font-size: 1rem;
+    }
+    .countdown-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        width: 100%;
+    }
+    .countdown-value {
+        font-size: 1.6rem;
+    }
+    .flip-card {
+        min-width: unset;
+        width: 100%;
+    }
+    .easter-egg-content h1 {
+        font-size: 1.4rem;
+    }
+    .easter-egg-content p {
+        font-size: 0.85rem;
+    }
+    .chatbot-messages {
+        height: 180px;
+    }
+}
+
+/* ===== Landscape phones ===== */
+@media (max-height: 500px) and (orientation: landscape) {
+    section {
+        padding: 50px 20px 80px;
+        gap: 16px;
+        min-height: auto;
+    }
+    .header h1 {
+        font-size: 1.2rem;
     }
     .countdown-container {
         gap: 12px;
@@ -618,24 +816,28 @@ section {
         font-size: 2rem;
     }
     .flip-card {
-        padding: 10px 14px;
-        min-width: 65px;
-    }
-    .chatbot {
-        width: calc(100% - 20px);
-        right: 10px;
+        padding: 8px 14px;
+        min-width: 60px;
     }
     .quote-box {
-        font-size: 0.95rem;
-        padding: 16px 20px;
+        padding: 12px 16px;
+        font-size: 0.9rem;
+    }
+    .mini-game, .facts-section {
+        padding: 18px;
+    }
+    .chatbot-messages {
+        height: 150px;
     }
 }
 
-@media (max-width: 370px) {
-    .header h1 {
-        font-size: 1.1rem;
+/* ===== Reduce motion for accessibility & battery saving ===== */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
     }
-    .countdown-value {
-        font-size: 1.6rem;
+    body {
+        animation: none;
     }
 }
