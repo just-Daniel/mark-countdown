@@ -1,37 +1,144 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Зворотній відлік для Марка — коли він почне спілкуватись з дівчатами">
+    <meta property="og:title" content="Стосунки Марка — Зворотній відлік">
+    <meta property="og:description" content="Дізнайся скільки залишилось чекати Марку!">
     <title>Стосунки Марка</title>
     <link rel="icon" href="https://cdn-icons-png.flaticon.com/128/1407/1407089.png">
     <link rel="stylesheet" type="text/css" href="styles.css" />
-    <script src="scripts.js"></script>
+    <noscript>
+        <style>
+            .needs-js { display: none !important; }
+            .noscript-msg { display: flex !important; }
+        </style>
+    </noscript>
 </head>
 <body>
-    <section>
+    <!-- Floating hearts canvas -->
+    <canvas id="hearts-canvas"></canvas>
+
+    <!-- Controls -->
+    <div class="controls">
+        <button id="theme-toggle" title="Змінити тему">🌙</button>
+        <button id="sound-toggle" title="Звук тікання">🔇</button>
+        <button id="share-btn" title="Поділитись">📤</button>
+    </div>
+
+    <!-- Share toast -->
+    <div class="toast" id="toast">Скопійовано в буфер!</div>
+
+    <section class="needs-js">
         <div class="header">
-            <h1>Марк почне спілкуватись з дівчатами через:</h1>
+            <h1 id="main-heading">Марк почне спілкуватись з дівчатами через:</h1>
+        </div>
+
+        <!-- Progress bar -->
+        <div class="progress-wrapper">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <span class="progress-text" id="progress-text">0% пройшло</span>
         </div>
 
         <div class="countdown-container" id="countdown">
-            <div class="flex flex-col">
-                <span id="days" class="countdown-value"></span>
-                <span class="countdown-heading">Дні</span>
+            <div class="flip-card-wrapper" id="click-toggle-elapsed">
+                <div class="flex-col">
+                    <div class="flip-card">
+                        <span id="days" class="countdown-value">0</span>
+                    </div>
+                    <span class="countdown-heading">Дні</span>
+                </div>
             </div>
-            <div class="flex flex-col">
-                <span id="hours" class="countdown-value"></span>
-                <span class="countdown-heading">Години</span>
+            <div class="flip-card-wrapper">
+                <div class="flex-col">
+                    <div class="flip-card">
+                        <span id="hours" class="countdown-value">0</span>
+                    </div>
+                    <span class="countdown-heading">Години</span>
+                </div>
             </div>
-            <div class="flex flex-col">
-                <span id="minutes" class="countdown-value"></span>
-                <span class="countdown-heading">Хвилини</span>
+            <div class="flip-card-wrapper">
+                <div class="flex-col">
+                    <div class="flip-card">
+                        <span id="minutes" class="countdown-value">0</span>
+                    </div>
+                    <span class="countdown-heading">Хвилини</span>
+                </div>
             </div>
-            <div class="flex flex-col">
-                <span id="seconds" class="countdown-value"></span>
-                <span class="countdown-heading">Секунди</span>
+            <div class="flip-card-wrapper">
+                <div class="flex-col">
+                    <div class="flip-card">
+                        <span id="seconds" class="countdown-value">0</span>
+                    </div>
+                    <span class="countdown-heading">Секунди</span>
+                </div>
             </div>
         </div>
+
+        <p class="mode-hint" id="mode-hint">Натисни на таймер щоб побачити скільки вже пройшло</p>
+
+        <!-- Quotes -->
+        <div class="quote-box" id="quote-box">
+            <p id="quote-text">Завантаження мудрості...</p>
+        </div>
+
+        <!-- Mini game -->
+        <div class="mini-game">
+            <h2>⚡ Прискори таймер!</h2>
+            <p>Натисни 1000 разів щоб прискорити час для Марка</p>
+            <button id="speed-btn" class="game-btn">⏩ Натисни! (<span id="click-count">0</span>/1000)</button>
+            <div class="game-progress-bar">
+                <div class="game-progress-fill" id="game-progress-fill"></div>
+            </div>
+            <p class="game-msg" id="game-msg"></p>
+        </div>
+
+        <!-- Facts -->
+        <div class="facts-section">
+            <h2>📋 Що Марк встигне зробити за цей час:</h2>
+            <div class="facts-list" id="facts-list"></div>
+            <button id="refresh-facts" class="refresh-btn">🔄 Інші факти</button>
+        </div>
     </section>
+
+    <!-- Noscript fallback -->
+    <section class="noscript-msg" style="display:none;">
+        <h1>Увімкніть JavaScript щоб побачити таймер Марка!</h1>
+    </section>
+
+    <!-- Chatbot -->
+    <div class="chatbot needs-js" id="chatbot">
+        <div class="chatbot-header" id="chatbot-toggle">
+            <span>💬 Марк з майбутнього</span>
+            <span class="chatbot-arrow" id="chatbot-arrow">▲</span>
+        </div>
+        <div class="chatbot-body" id="chatbot-body">
+            <div class="chatbot-messages" id="chatbot-messages">
+                <div class="bot-msg">Привіт! Я Марк з 2031 року. Можеш запитати мене що завгодно 😎</div>
+            </div>
+            <div class="chatbot-input-row">
+                <input type="text" id="chatbot-input" placeholder="Напиши щось..." />
+                <button id="chatbot-send">➤</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confetti canvas -->
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- Konami easter egg overlay -->
+    <div class="easter-egg-overlay" id="easter-egg">
+        <div class="easter-egg-content">
+            <h1>🎉 SECRET UNLOCKED 🎉</h1>
+            <p>Марк, ти знайшов секретний код!</p>
+            <p>Тепер ти офіційно geek — дівчата це цінують 😏</p>
+            <button onclick="document.getElementById('easter-egg').classList.remove('active')">Закрити</button>
+        </div>
+    </div>
+
+    <script src="scripts.js" defer></script>
 </body>
 </html>
